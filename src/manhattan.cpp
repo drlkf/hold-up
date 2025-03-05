@@ -13,7 +13,7 @@
                     eteindre toutes les leds
                     // nombre de boutons encore enfoncés
                     nbButtonOn = 0;
-                    pour chaque bouton[ii] ( TblPinBtn[0 à 9] )
+                    pour chaque bouton[ii] (TblPinBtn[0 à 9])
                       si bouton[ii] enfoncé
                         allumer la led[ii]
                         nbButtonOn++
@@ -65,7 +65,7 @@ void setup() {
   digitalWrite(IMP_OUVERTURE, HIGH);
   Serial.println("Depart");
   // initialisation des tables
-  for ( int ii = 0; ii < NB_ELEM; ii++ ) {
+  for (int ii = 0; ii < NB_ELEM; ii++) {
     pinMode(TblPinBtn[ii], INPUT_PULLUP);
     pinMode(TblPinLed[ii], OUTPUT);
   }
@@ -127,7 +127,7 @@ void loop() {
     // état initial, raz TblOrdDonnes, NbRead
   case EA_INIT:
     // initialisation des tables, extinction des LED
-    for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+    for (int ii = 0; ii <NB_ELEM; ii++) {
       Serial.print("EA_INIT     ii = ");
       Serial.println(ii);
       TblOrdDonnes[ii] = -1;
@@ -138,9 +138,9 @@ void loop() {
     NbRead = 0;
     EtatAutom = EA_READBTN;
     // on verifie que tous les boutons sont OFF
-    for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+    for (int ii = 0; ii <NB_ELEM; ii++) {
       buttonIsOn = !digitalRead(TblPinBtn[ii]);
-      if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+      if (buttonIsOn && TblEtaBtn[ii] == 0) {
         // force l'utilisateur à remonter tous les boutons
         EtatAutom = EA_FAILURE;
       }
@@ -149,40 +149,40 @@ void loop() {
 
   // en attente de lecture des boutons ; tant que NbRead < NB_ELEM - 1
   case EA_READBTN:
-    for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+    for (int ii = 0; ii <NB_ELEM; ii++) {
       buttonIsOn = !digitalRead(TblPinBtn[ii]);
       Serial.println("EA_READBTN");
       Serial.print(buttonIsOn);
       Serial.print(" ");
       Serial.println(TblEtaBtn[ii]);
-      if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+      if (buttonIsOn && TblEtaBtn[ii] == 0) {
         TblEtaBtn[ii] = 1;
         digitalWrite(TblPinLed[ii], LOW);
         TblOrdDonnes[NbRead] = ii;
         NbRead++;
       }
-      if ( !buttonIsOn && TblEtaBtn[ii] == 1 ) {
+      if (!buttonIsOn && TblEtaBtn[ii] == 1) {
         int rang = -1;
         TblEtaBtn[ii] = 0;
         digitalWrite(TblPinLed[ii], HIGH);
 
         // retrouver le rang du bouton ii
-        for ( int jj = 0; jj <= NbRead; jj++ )
-          if ( TblOrdDonnes[jj] == ii )
+        for (int jj = 0; jj <= NbRead; jj++)
+          if (TblOrdDonnes[jj] == ii)
             rang = jj;
 
         // décalage des rangs : pour jj de rang à NbRead :
         // TblOrdDonnes[jj] = TblOrdDonnes[jj+1]
-        for ( int jj = rang; jj <= NbRead; jj++ )
+        for (int jj = rang; jj <= NbRead; jj++)
           TblOrdDonnes[jj] = TblOrdDonnes[jj+1];
         NbRead--;
       }
     }
 
     // au moins 9 boutons sur 10 appuyés
-    // V4 if ( NbRead == NB_ELEM - 1 ) {
+    // V4 if (NbRead == NB_ELEM - 1) {
     // 10 boutons sur 10 appuyés
-    if ( NbRead == NB_ELEM - 0 ) {
+    if (NbRead == NB_ELEM - 0) {
       EtatAutom = EA_CHECK;
     }
     break;
@@ -191,9 +191,9 @@ void loop() {
   case EA_CHECK:
     EtatAutom = EA_SUCCESS;
 
-    // V4 for ( int ii = 0; ii <NB_ELEM - 1; ii++ ) {
-    for ( int ii = 0; ii <NB_ELEM - 0; ii++ ) {
-      if ( TblOrdDonnes[ii] != TblOrdRequis[ii] ) {
+    // V4 for (int ii = 0; ii <NB_ELEM - 1; ii++) {
+    for (int ii = 0; ii <NB_ELEM - 0; ii++) {
+      if (TblOrdDonnes[ii] != TblOrdRequis[ii]) {
         EtatAutom = EA_FAILURE;
         break;
       }
@@ -207,7 +207,7 @@ void loop() {
       Serial.print(" for ");
       Serial.println(digitalRead(POS_BATTERIE));
       // farandole de led
-      for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+      for (int ii = 0; ii <NB_ELEM; ii++) {
         digitalWrite(TblPinLed[ii], LOW);
         delay(50);
         digitalWrite(TblPinLed[ii], HIGH);
@@ -229,31 +229,31 @@ void loop() {
     // tant qu'il y a au moins un bouton enfoncé
     while (1) {
       // extinction des LED
-      for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+      for (int ii = 0; ii <NB_ELEM; ii++) {
         digitalWrite(TblPinLed[ii], HIGH);
         delay(5);
       }
       // allumage des LED correspondant aux boutons enfoncés
-      for ( int ii = 0; ii <NB_ELEM; ii++ ) {
-        if ( TblEtaBtn[ii] == 1 ) {
+      for (int ii = 0; ii <NB_ELEM; ii++) {
+        if (TblEtaBtn[ii] == 1) {
           digitalWrite(TblPinLed[ii], LOW);
           delay(5);
           nbButtonOn = 0;
         }
       }
       // vérifier si un bouton a changé d'état
-      for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+      for (int ii = 0; ii <NB_ELEM; ii++) {
         buttonIsOn = !digitalRead(TblPinBtn[ii]);
-        if ( !buttonIsOn && TblEtaBtn[ii] == 1 ) {
+        if (!buttonIsOn && TblEtaBtn[ii] == 1) {
           TblEtaBtn[ii] = 0;
         }
-        if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+        if (buttonIsOn && TblEtaBtn[ii] == 0) {
           TblEtaBtn[ii] = 1;
           // mémorise le nombre de boutons enfoncés
           nbButtonOn += TblEtaBtn[ii];
         }
       }
-      if ( nbButtonOn == 0 ) {
+      if (nbButtonOn == 0) {
         // retour à l'état initial
         EtatAutom = EA_INIT;
         break;
@@ -266,17 +266,17 @@ void loop() {
     int nbButtonOn_bis = 0;
     while (1) {
       // eteindre toutes les leds
-      for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+      for (int ii = 0; ii <NB_ELEM; ii++) {
         digitalWrite(TblPinLed[ii], HIGH);
         delay(5);
       }
     }
 
-    // pour chaque bouton[ii] ( TblPinBtn[0 à 9] )
-    for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+    // pour chaque bouton[ii] (TblPinBtn[0 à 9])
+    for (int ii = 0; ii <NB_ELEM; ii++) {
       buttonIsOn = !digitalRead(TblPinBtn[ii]);
       // si bouton[ii] enfoncé
-      if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+      if (buttonIsOn && TblEtaBtn[ii] == 0) {
         // allumer la led[ii]
         digitalWrite(TblPinLed[ii], LOW);
         // nbButtonOn++
@@ -284,7 +284,7 @@ void loop() {
       }
     }
 
-    if ( nbButtonOn_bis == 0 ) {
+    if (nbButtonOn_bis == 0) {
       // retour à l'état initial
       EtatAutom = EA_INIT;
     }
