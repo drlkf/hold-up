@@ -140,14 +140,14 @@ void loop() {
         digitalWrite(tableauPinLed[i], HIGH);
 
         // retrouver le rang du bouton i
-        for (int jj = 0; jj <= nbRead; jj++)
-          if (tableauOrdDonnes[jj] == i)
-            rang = jj;
+        for (int j = 0; j <= nbRead; j++)
+          if (tableauOrdDonnes[j] == i)
+            rang = j;
 
-        // décalage des rangs : pour jj de rang à nbRead :
-        // tableauOrdDonnes[jj] = tableauOrdDonnes[jj+1]
-        for (int jj = rang; jj <= nbRead; jj++)
-          tableauOrdDonnes[jj] = tableauOrdDonnes[jj+1];
+        // décalage des rangs : pour j de rang à nbRead :
+        // tableauOrdDonnes[j] = tableauOrdDonnes[j+1]
+        for (int j = rang; j <= nbRead; j++)
+          tableauOrdDonnes[j] = tableauOrdDonnes[j+1];
         nbRead--;
       }
     }
