@@ -37,53 +37,16 @@
   #include "Arduino.h"
 #endif
 
-// contact d'extraction de la batterie
-const int positionBatterie = 7;
-// relais du moteur sens ouverture
-const int impulsOuverture = 6;
-// relais du moteur sens fermeture
-const int impulsFermeture = 5;
+#include "manhattan.h"
 
-// nombre de couples bouton-led à gérer
-const int NB_ELEM = 10;
-
-// état initial, raz TblOrdDonnes, NbRead
-const int EA_INIT =  5;
-// en attente de lecture des boutons ; tant que NbRead < NB_ELEM - 1
-const int EA_READBTN = 10;
-// vérification ordre de saisie
-const int EA_CHECK = 15;
-// ouverture du tiroir
-const int EA_SUCCESS = 20;
-const int EA_FAILURE = 25;
-// clignotement des LED tant qu'il reste un bouton enfoncé
-const int EA_FAILURE2 = 30;
-
-// temps en secondes de fonctionnement du moteur pour ouverture du tiroir
-const int deplacementTiroir = 10.5;
-
-// le bouton de rang ii gère la led de même rang
-// les boutons
-int TblPinBtn[NB_ELEM] = {30, 32, 34, 36, 38, 40, 42, 44, 46, 48};
-// les LED
-int TblPinLed[NB_ELEM] = {31, 33, 35, 37, 39, 41, 43, 45, 47, 49};
 int TblEtaBtn[NB_ELEM];
-
-// V4 int TblOrdRequis[NB_ELEM - 1] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-int TblOrdRequis[NB_ELEM - 0] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 int TblOrdDonnes[NB_ELEM - 0];
 int NbRead;
 int EtatAutom, EtatAutomPrec;
 
-enum EtatTiroir {
-  FERME,
-  OUVERTURE,
-  OUVERT
-};
-
 // position initiale du tiroir
-int etatTiroir = FERME;
+int etatTiroir = TIR_FERME;
 
 void setup() {
   // initialisation du port série pour débogage
@@ -91,15 +54,15 @@ void setup() {
   // permet d'attendre que le buffer d'envoi des données soit vide
   Serial.flush();
   // lecture de la présence de la batterie
-  pinMode(positionBatterie, INPUT);
+  pinMode(POS_BATTERIE, INPUT);
   // sortie vers relais ouverture
-  pinMode(impulsOuverture, OUTPUT);
+  pinMode(IMP_OUVERTURE, OUTPUT);
   // sortie vers relais fermeture
-  pinMode(impulsFermeture, OUTPUT);
+  pinMode(IMP_FERMETURE, OUTPUT);
   // ouverture des relais = arrêt moteur
-  digitalWrite(impulsFermeture, HIGH);
+  digitalWrite(IMP_FERMETURE, HIGH);
   // id
-  digitalWrite(impulsOuverture, HIGH);
+  digitalWrite(IMP_OUVERTURE, HIGH);
   Serial.println("Depart");
   // initialisation des tables
   for ( int ii = 0; ii < NB_ELEM; ii++ ) {
@@ -115,20 +78,20 @@ void ouvertureTiroir() {
 
   Serial.println("appel de ouvertureTiroir");
 
-  digitalWrite(impulsOuverture, LOW);
+  digitalWrite(IMP_OUVERTURE, LOW);
   delay(1000);
-  digitalWrite(impulsOuverture, HIGH);
+  digitalWrite(IMP_OUVERTURE, HIGH);
   Serial.print(debut);
   Serial.print(" ");
   Serial.println(millis() - debut);
 
-  while ((deplacementTiroir * 1000) > (millis() - debut )) {
+  while ((DEPL_TIROIR * 1000) > (millis() - debut )) {
     Serial.println("Ca tourne... ");
   }
 
-  digitalWrite(impulsOuverture, HIGH);
+  digitalWrite(IMP_OUVERTURE, HIGH);
   // arrêt moteur
-  digitalWrite(impulsFermeture, LOW);
+  digitalWrite(IMP_FERMETURE, LOW);
   // le tiroir est ouvert
   etatTiroir = 1;
 
@@ -140,7 +103,7 @@ void fermetureTiroir() {
   Serial.println("Fermeture tiroir");
 
   delay(30000);
-  digitalWrite(impulsFermeture, HIGH);
+  digitalWrite(IMP_FERMETURE, HIGH);
   etatTiroir = 2;
 
   Serial.println("retour de fermetureTiroir");
@@ -149,6 +112,8 @@ void fermetureTiroir() {
 void loop() {
   // drapeau de vérification de l'état des boutons
   bool buttonIsOn;
+  // nombre de boutons encore enfoncés
+  int nbButtonOn;
 
   delay(500);
   // l'énigme est résolue...
@@ -240,7 +205,7 @@ void loop() {
     ouvertureTiroir();
     while (etatTiroir != 2) {
       Serial.print(" for ");
-      Serial.println(digitalRead(positionBatterie));
+      Serial.println(digitalRead(POS_BATTERIE));
       // farandole de led
       for ( int ii = 0; ii <NB_ELEM; ii++ ) {
         digitalWrite(TblPinLed[ii], LOW);
@@ -249,10 +214,10 @@ void loop() {
         delay(50);
         Serial.print(etatTiroir);
         Serial.print(" attente ");
-        Serial.println(digitalRead(positionBatterie));
+        Serial.println(digitalRead(POS_BATTERIE));
       }
       // la batterie est-elle retirée ?
-      if (digitalRead(positionBatterie) != HIGH && etatTiroir != 2) {
+      if (digitalRead(POS_BATTERIE) != HIGH && etatTiroir != 2) {
         fermetureTiroir();
       }
     }
@@ -260,8 +225,7 @@ void loop() {
 
   // erreur : on force l'utilisateur à remonter tous les boutons
   case EA_FAILURE:
-    // nombre de boutons encore enfoncés
-    int nbButtonOn = 0;
+    nbButtonOn = 0;
     // tant qu'il y a au moins un bouton enfoncé
     while (1) {
       // extinction des LED

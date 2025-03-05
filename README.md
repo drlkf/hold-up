@@ -10,12 +10,12 @@ compile and run tests.
 Use the following command to compile the driver:
 
 ```bash
-platformio run
+platformio run -e board
 ```
 
 # Running tests
 Use the following command to run unit tests:
 
 ```bash
-platformio test -e native
+platformio test -e test
 ```
