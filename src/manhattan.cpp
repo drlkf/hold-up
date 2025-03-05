@@ -163,7 +163,8 @@ void loop() {
   case EA_INIT:
     // initialisation des tables, extinction des LED
     for ( int ii = 0; ii <NB_ELEM; ii++ ) {
-      Serial.print("EA_INIT     ii = ");Serial.println(ii);
+      Serial.print("EA_INIT     ii = ");
+      Serial.println(ii);
       TblOrdDonnes[ii] = -1;
       TblEtaBtn[ii] = 0;
       digitalWrite(TblPinLed[ii],HIGH);
