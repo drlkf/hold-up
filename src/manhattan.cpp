@@ -4,8 +4,8 @@
 // Cette version a été validée sur site le 03/07/2024
 
 // #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 4.0"
-//  il faut que les 10 boutons soit enfoncés pour pouvoir faire le check de l'ordre d'enfoncement des boutons
-//  modif et validation sur site le 2024/08/11
+// il faut que les 10 boutons soit enfoncés pour pouvoir faire le check de l'ordre d'enfoncement des boutons
+// modif et validation sur site le 2024/08/11
 
 // #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 5.0"
 /*  changement mode de gestion du case EA_FAILURE ==> EA_FAILURE2
@@ -20,9 +20,9 @@
                       fsi
                     fpour
                     si nbButtonOn == 0
-                      //  retour à l'état initial
+                      // retour à l'état initial
                       EtatAutom = EA_INIT;
-                      //  sortir de la loop
+                      // sortir de la loop
                       break
                     fsi
                     delay(500)
@@ -100,6 +100,41 @@ void setup() {
   EtatAutom = EA_INIT;
 }
 
+void ouvertureTiroir() {
+  long debut = millis();
+
+  Serial.println("appel de ouvertureTiroir");
+
+  digitalWrite(impulsOuverture, LOW);
+  delay(1000);
+  digitalWrite(impulsOuverture, HIGH);
+  Serial.print(debut);
+  Serial.print(" ");
+  Serial.println(millis() - debut);
+
+  while ((deplacementTiroir * 1000) > (millis() - debut )) {
+    Serial.println("Ca tourne... ");
+  }
+
+  digitalWrite(impulsOuverture, HIGH);
+  // arrêt moteur
+  digitalWrite(impulsFermeture, LOW);
+  // le tiroir est ouvert
+  etatTiroir = 1;
+
+  Serial.println("retour de ouvertureTiroir");
+}
+
+void fermetureTiroir() {
+  Serial.println("appel de fermetureTiroir");
+  Serial.println("Fermeture tiroir");
+
+  delay(30000);
+  digitalWrite(impulsFermeture, HIGH);
+  etatTiroir = 2;
+
+  Serial.println("retour de fermetureTiroir");
+}
 
 void loop() {
   delay(500);
@@ -167,7 +202,7 @@ void loop() {
 
     // au moins 9 boutons sur 10 appuyés
     // V4 if ( NbRead == NB_ELEM - 1 ) {
-    //         10 boutons sur 10 appuyés
+    // 10 boutons sur 10 appuyés
     if ( NbRead == NB_ELEM - 0 ) {
       EtatAutom = EA_CHECK;
     }
@@ -188,10 +223,7 @@ void loop() {
 
   // le code est bon
   case EA_SUCCESS:
-    Serial.println("appel de ouvertureTiroir");
-    // ouverture du tiroir
     ouvertureTiroir();
-    Serial.println("retour de ouvertureTiroir");
     while (etatTiroir != 2) {
       Serial.print(" for ");
       Serial.println(digitalRead(positionBatterie));
@@ -207,9 +239,7 @@ void loop() {
       }
       // la batterie est-elle retirée ?
       if (digitalRead(positionBatterie) != HIGH && etatTiroir != 2) {
-        Serial.println("Fermé1");
         fermetureTiroir();
-        Serial.println("Fermé2");
       }
     }
     break;
@@ -246,7 +276,7 @@ void loop() {
         }
       }
       if ( nbButtonOn == 0 ) {
-        //  retour à l'état initial
+        // retour à l'état initial
         EtatAutom = EA_INIT;
         break;
       }
@@ -262,23 +292,22 @@ void loop() {
         digitalWrite(TblPinLed[ii], HIGH);
         delay(5);
       }
-
     }
 
-    //  pour chaque bouton[ii] ( TblPinBtn[0 à 9] )
+    // pour chaque bouton[ii] ( TblPinBtn[0 à 9] )
     for ( int ii = 0; ii <NB_ELEM; ii++ )
       {  buttonIsOn = !digitalRead(TblPinBtn[ii]);
-        //  si bouton[ii] enfoncé
-        if ( buttonIsOn && TblEtaBtn[ii] == 0 )
-          //    allumer la led[ii]
-          { digitalWrite(TblPinLed[ii], LOW);
-            //    nbButtonOn++
-            nbButtonOn_bis++;
-          }
+        // si bouton[ii] enfoncé
+        if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+          // allumer la led[ii]
+          digitalWrite(TblPinLed[ii], LOW);
+          // nbButtonOn++
+          nbButtonOn_bis++;
+        }
       }
 
     if ( nbButtonOn_bis == 0 ) {
-      //  retour à l'état initial
+      // retour à l'état initial
       EtatAutom = EA_INIT;
     }
     delay(500);
@@ -286,26 +315,3 @@ void loop() {
   }
 }
 
-void ouvertureTiroir() {
-  long debut = millis();
-  digitalWrite(impulsOuverture, LOW);
-  delay(1000);
-  digitalWrite(impulsOuverture, HIGH);
-  Serial.print(debut);
-  Serial.print(" ");
-  Serial.println(millis() - debut);
-  while ((deplacementTiroir * 1000) > (millis() - debut )) {
-    Serial.println("Ca tourne... ");
-  }
-  digitalWrite(impulsOuverture, HIGH);
-  // arrêt moteur
-  digitalWrite(impulsFermeture, LOW);
-  // le tiroir est ouvert
-  etatTiroir = 1;
-}
-
-void fermetureTiroir() {
-  delay(30000);
-  digitalWrite(impulsFermeture, HIGH);
-  etatTiroir = 2;
-}
