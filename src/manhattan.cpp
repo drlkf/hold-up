@@ -7,7 +7,7 @@
 //  il faut que les 10 boutons soit enfoncés pour pouvoir faire le check de l'ordre d'enfoncement des boutons
 //  modif et validation sur site le 2024/08/11
 
-#define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 5.0"
+// #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 5.0"
 /*  changement mode de gestion du case EA_FAILURE ==> EA_FAILURE2
     EA_FAILURE2 : loop
                     eteindre toutes les leds
@@ -29,6 +29,7 @@
                   endLoop
 */
 
+#define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 6.0"
 
 // contact d'extraction de la batterie
 const int positionBatterie = 7;
