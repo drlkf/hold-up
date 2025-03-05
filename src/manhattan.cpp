@@ -38,9 +38,9 @@ void setup() {
   digitalWrite(IMP_OUVERTURE, HIGH);
   Serial.println("Depart");
   // initialisation des tables
-  for (int ii = 0; ii < NB_ELEM; ii++) {
-    pinMode(tableauPinBtn[ii], INPUT_PULLUP);
-    pinMode(tableauPinLed[ii], OUTPUT);
+  for (int i = 0; i < NB_ELEM; i++) {
+    pinMode(tableauPinBtn[i], INPUT_PULLUP);
+    pinMode(tableauPinLed[i], OUTPUT);
   }
   Serial.println("Depart2");
   etatAutom = EA_INIT;
@@ -100,20 +100,20 @@ void loop() {
     // état initial, raz tableauOrdDonnes, nbRead
   case EA_INIT:
     // initialisation des tables, extinction des LED
-    for (int ii = 0; ii <NB_ELEM; ii++) {
-      Serial.print("EA_INIT     ii = ");
-      Serial.println(ii);
-      tableauOrdDonnes[ii] = -1;
-      tableauEtaBtn[ii] = 0;
-      digitalWrite(tableauPinLed[ii],HIGH);
+    for (int i = 0; i <NB_ELEM; i++) {
+      Serial.print("EA_INIT     i = ");
+      Serial.println(i);
+      tableauOrdDonnes[i] = -1;
+      tableauEtaBtn[i] = 0;
+      digitalWrite(tableauPinLed[i],HIGH);
     }
     // RAZ du nombre de boutons appuyés
     nbRead = 0;
     etatAutom = EA_READBTN;
     // on verifie que tous les boutons sont OFF
-    for (int ii = 0; ii <NB_ELEM; ii++) {
-      buttonIsOn = !digitalRead(tableauPinBtn[ii]);
-      if (buttonIsOn && tableauEtaBtn[ii] == 0) {
+    for (int i = 0; i <NB_ELEM; i++) {
+      buttonIsOn = !digitalRead(tableauPinBtn[i]);
+      if (buttonIsOn && tableauEtaBtn[i] == 0) {
         // force l'utilisateur à remonter tous les boutons
         etatAutom = EA_FAILURE;
       }
@@ -123,25 +123,25 @@ void loop() {
     // en attente de lecture des boutons ; tant que nbRead < NB_ELEM - 1
   case EA_READBTN:
     Serial.println("EA_READBTN");
-    for (int ii = 0; ii <NB_ELEM; ii++) {
-      buttonIsOn = !digitalRead(tableauPinBtn[ii]);
+    for (int i = 0; i <NB_ELEM; i++) {
+      buttonIsOn = !digitalRead(tableauPinBtn[i]);
       Serial.print(buttonIsOn);
       Serial.print(" ");
-      Serial.println(tableauEtaBtn[ii]);
-      if (buttonIsOn && tableauEtaBtn[ii] == 0) {
-        tableauEtaBtn[ii] = 1;
-        digitalWrite(tableauPinLed[ii], LOW);
-        tableauOrdDonnes[nbRead] = ii;
+      Serial.println(tableauEtaBtn[i]);
+      if (buttonIsOn && tableauEtaBtn[i] == 0) {
+        tableauEtaBtn[i] = 1;
+        digitalWrite(tableauPinLed[i], LOW);
+        tableauOrdDonnes[nbRead] = i;
         nbRead++;
       }
-      if (!buttonIsOn && tableauEtaBtn[ii] == 1) {
+      if (!buttonIsOn && tableauEtaBtn[i] == 1) {
         int rang = -1;
-        tableauEtaBtn[ii] = 0;
-        digitalWrite(tableauPinLed[ii], HIGH);
+        tableauEtaBtn[i] = 0;
+        digitalWrite(tableauPinLed[i], HIGH);
 
-        // retrouver le rang du bouton ii
+        // retrouver le rang du bouton i
         for (int jj = 0; jj <= nbRead; jj++)
-          if (tableauOrdDonnes[jj] == ii)
+          if (tableauOrdDonnes[jj] == i)
             rang = jj;
 
         // décalage des rangs : pour jj de rang à nbRead :
@@ -172,10 +172,10 @@ void loop() {
       Serial.print(" for ");
       Serial.println(digitalRead(POS_BATTERIE));
       // farandole de led
-      for (int ii = 0; ii <NB_ELEM; ii++) {
-        digitalWrite(tableauPinLed[ii], LOW);
+      for (int i = 0; i <NB_ELEM; i++) {
+        digitalWrite(tableauPinLed[i], LOW);
         delay(50);
-        digitalWrite(tableauPinLed[ii], HIGH);
+        digitalWrite(tableauPinLed[i], HIGH);
         delay(50);
         Serial.print(etatTiroir);
         Serial.print(" attente ");
@@ -194,28 +194,28 @@ void loop() {
     // tant qu'il y a au moins un bouton enfoncé
     while (1) {
       // extinction des LED
-      for (int ii = 0; ii <NB_ELEM; ii++) {
-        digitalWrite(tableauPinLed[ii], HIGH);
+      for (int i = 0; i <NB_ELEM; i++) {
+        digitalWrite(tableauPinLed[i], HIGH);
         delay(5);
       }
       // allumage des LED correspondant aux boutons enfoncés
-      for (int ii = 0; ii <NB_ELEM; ii++) {
-        if (tableauEtaBtn[ii] == 1) {
-          digitalWrite(tableauPinLed[ii], LOW);
+      for (int i = 0; i <NB_ELEM; i++) {
+        if (tableauEtaBtn[i] == 1) {
+          digitalWrite(tableauPinLed[i], LOW);
           delay(5);
           nbButtonOn = 0;
         }
       }
       // vérifier si un bouton a changé d'état
-      for (int ii = 0; ii <NB_ELEM; ii++) {
-        buttonIsOn = !digitalRead(tableauPinBtn[ii]);
-        if (!buttonIsOn && tableauEtaBtn[ii] == 1) {
-          tableauEtaBtn[ii] = 0;
+      for (int i = 0; i <NB_ELEM; i++) {
+        buttonIsOn = !digitalRead(tableauPinBtn[i]);
+        if (!buttonIsOn && tableauEtaBtn[i] == 1) {
+          tableauEtaBtn[i] = 0;
         }
-        if (buttonIsOn && tableauEtaBtn[ii] == 0) {
-          tableauEtaBtn[ii] = 1;
+        if (buttonIsOn && tableauEtaBtn[i] == 0) {
+          tableauEtaBtn[i] = 1;
           // mémorise le nombre de boutons enfoncés
-          nbButtonOn += tableauEtaBtn[ii];
+          nbButtonOn += tableauEtaBtn[i];
         }
       }
       if (nbButtonOn == 0) {
@@ -231,19 +231,19 @@ void loop() {
     int nbButtonOn_bis = 0;
     while (1) {
       // eteindre toutes les leds
-      for (int ii = 0; ii <NB_ELEM; ii++) {
-        digitalWrite(tableauPinLed[ii], HIGH);
+      for (int i = 0; i <NB_ELEM; i++) {
+        digitalWrite(tableauPinLed[i], HIGH);
         delay(5);
       }
     }
 
-    // pour chaque bouton[ii] (tableauPinBtn[0 à 9])
-    for (int ii = 0; ii <NB_ELEM; ii++) {
-      buttonIsOn = !digitalRead(tableauPinBtn[ii]);
-      // si bouton[ii] enfoncé
-      if (buttonIsOn && tableauEtaBtn[ii] == 0) {
-        // allumer la led[ii]
-        digitalWrite(tableauPinLed[ii], LOW);
+    // pour chaque bouton[i] (tableauPinBtn[0 à 9])
+    for (int i = 0; i <NB_ELEM; i++) {
+      buttonIsOn = !digitalRead(tableauPinBtn[i]);
+      // si bouton[i] enfoncé
+      if (buttonIsOn && tableauEtaBtn[i] == 0) {
+        // allumer la led[i]
+        digitalWrite(tableauPinLed[i], LOW);
         // nbButtonOn++
         nbButtonOn_bis++;
       }
