@@ -1,34 +1,3 @@
-
-// #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 2.0"
-// Cette version utilise un piston linéaire
-// Cette version a été validée sur site le 03/07/2024
-
-// #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 4.0"
-// il faut que les 10 boutons soit enfoncés pour pouvoir faire le check de l'ordre d'enfoncement des boutons
-// modif et validation sur site le 2024/08/11
-
-// #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 5.0"
-/*  changement mode de gestion du case EA_FAILURE ==> EA_FAILURE2
-    EA_FAILURE2 : loop
-                    eteindre toutes les leds
-                    // nombre de boutons encore enfoncés
-                    nbButtonOn = 0;
-                    pour chaque bouton[ii] (TblPinBtn[0 à 9])
-                      si bouton[ii] enfoncé
-                        allumer la led[ii]
-                        nbButtonOn++
-                      fsi
-                    fpour
-                    si nbButtonOn == 0
-                      // retour à l'état initial
-                      EtatAutom = EA_INIT;
-                      // sortir de la loop
-                      break
-                    fsi
-                    delay(500)
-                  endLoop
-*/
-
 #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 6.0"
 
 #ifdef UNIT_TEST
@@ -85,7 +54,7 @@ void ouvertureTiroir() {
   Serial.print(" ");
   Serial.println(millis() - debut);
 
-  while ((DEPL_TIROIR * 1000) > (millis() - debut )) {
+  while ((DEPL_TIROIR * 1000) > (millis() - debut)) {
     Serial.println("Ca tourne... ");
   }
 
