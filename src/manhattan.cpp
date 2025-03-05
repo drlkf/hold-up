@@ -105,7 +105,7 @@ void loop() {
       Serial.println(i);
       tableauOrdDonnes[i] = -1;
       tableauEtaBtn[i] = 0;
-      digitalWrite(tableauPinLed[i],HIGH);
+      digitalWrite(tableauPinLed[i], HIGH);
     }
     // RAZ du nombre de boutons appuyés
     nbRead = 0;
