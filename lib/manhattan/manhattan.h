@@ -33,8 +33,8 @@ enum ImpulsionMoteur {
 
 enum EtatTiroir {
   TIR_FERME,
-  TIR_OUVERTURE,
-  TIR_OUVERT
+  TIR_OUVERT,
+  TIR_REFERME
 };
 
 // le bouton de rang ii gère la led de même rang

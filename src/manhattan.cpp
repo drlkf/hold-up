@@ -15,7 +15,7 @@ int nbRead;
 int etatAutom, etatAutomPrec;
 
 // position initiale du tiroir
-int etatTiroir = TIR_FERME;
+EtatTiroir etatTiroir = TIR_FERME;
 
 /*
   Actions Arduino
@@ -66,7 +66,7 @@ void ouvertureTiroir() {
   // arrêt moteur
   digitalWrite(IMP_FERMETURE, LOW);
   // le tiroir est ouvert
-  etatTiroir = 1;
+  etatTiroir = TIR_OUVERT;
 
   Serial.println("retour de ouvertureTiroir");
 }
@@ -76,7 +76,7 @@ void fermetureTiroir() {
 
   delay(30000);
   digitalWrite(IMP_FERMETURE, HIGH);
-  etatTiroir = 2;
+  etatTiroir = TIR_REFERME;
 
   Serial.println("retour de fermetureTiroir");
 }
@@ -89,10 +89,11 @@ void loop() {
 
   delay(500);
   // l'énigme est résolue...
-  if (etatTiroir == 2) {
+  if (etatTiroir == TIR_REFERME) {
     Serial.println("Stop");
     // on boucle indéfiniment
-    while (true);
+    while (true)
+      delay(10000);
   }
 
   switch (etatAutom) {
@@ -121,9 +122,9 @@ void loop() {
 
     // en attente de lecture des boutons ; tant que nbRead < NB_ELEM - 1
   case EA_READBTN:
+    Serial.println("EA_READBTN");
     for (int ii = 0; ii <NB_ELEM; ii++) {
       buttonIsOn = !digitalRead(tableauPinBtn[ii]);
-      Serial.println("EA_READBTN");
       Serial.print(buttonIsOn);
       Serial.print(" ");
       Serial.println(tableauEtaBtn[ii]);
@@ -167,7 +168,7 @@ void loop() {
     // le code est bon
   case EA_SUCCESS:
     ouvertureTiroir();
-    while (etatTiroir != 2) {
+    while (etatTiroir != TIR_REFERME) {
       Serial.print(" for ");
       Serial.println(digitalRead(POS_BATTERIE));
       // farandole de led
@@ -181,7 +182,7 @@ void loop() {
         Serial.println(digitalRead(POS_BATTERIE));
       }
       // la batterie est-elle retirée ?
-      if (digitalRead(POS_BATTERIE) != HIGH && etatTiroir != 2) {
+      if (digitalRead(POS_BATTERIE) != HIGH && etatTiroir != TIR_REFERME) {
         fermetureTiroir();
       }
     }
