@@ -31,6 +31,12 @@
 
 #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 6.0"
 
+#ifdef UNIT_TEST
+  #include "ArduinoFake.h"
+#else
+  #include "Arduino.h"
+#endif
+
 // contact d'extraction de la batterie
 const int positionBatterie = 7;
 // relais du moteur sens ouverture
@@ -69,11 +75,15 @@ int TblOrdRequis[NB_ELEM - 0] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 int TblOrdDonnes[NB_ELEM - 0];
 int NbRead;
 int EtatAutom, EtatAutomPrec;
-// position initiale du tiroir
-int etatTiroir = 0;
 
-// drapeau de vérification de l'état des boutons
-bool buttonIsOn;
+enum EtatTiroir {
+  FERME,
+  OUVERTURE,
+  OUVERT
+};
+
+// position initiale du tiroir
+int etatTiroir = FERME;
 
 void setup() {
   // initialisation du port série pour débogage
@@ -137,6 +147,9 @@ void fermetureTiroir() {
 }
 
 void loop() {
+  // drapeau de vérification de l'état des boutons
+  bool buttonIsOn;
+
   delay(500);
   // l'énigme est résolue...
   if (etatTiroir == 2) {
@@ -295,16 +308,16 @@ void loop() {
     }
 
     // pour chaque bouton[ii] ( TblPinBtn[0 à 9] )
-    for ( int ii = 0; ii <NB_ELEM; ii++ )
-      {  buttonIsOn = !digitalRead(TblPinBtn[ii]);
-        // si bouton[ii] enfoncé
-        if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
-          // allumer la led[ii]
-          digitalWrite(TblPinLed[ii], LOW);
-          // nbButtonOn++
-          nbButtonOn_bis++;
-        }
+    for ( int ii = 0; ii <NB_ELEM; ii++ ) {
+      buttonIsOn = !digitalRead(TblPinBtn[ii]);
+      // si bouton[ii] enfoncé
+      if ( buttonIsOn && TblEtaBtn[ii] == 0 ) {
+        // allumer la led[ii]
+        digitalWrite(TblPinLed[ii], LOW);
+        // nbButtonOn++
+        nbButtonOn_bis++;
       }
+    }
 
     if ( nbButtonOn_bis == 0 ) {
       // retour à l'état initial
