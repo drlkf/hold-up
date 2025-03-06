@@ -101,6 +101,10 @@ void farandoleLed() {
   }
 }
 
+/*
+  boucle principale
+ */
+
 void loop() {
   // drapeau de vérification de l'état des boutons
   bool buttonIsOn;
@@ -166,6 +170,8 @@ void loop() {
 
         // décalage des rangs : pour j de rang à nbRead :
         // tableauOrdDonnes[j] = tableauOrdDonnes[j+1]
+        // FIXME est-ce que c'est ce qu'on veut? retrouver l'ordre si un bouton
+        // est desactive, au lieu de demander un raz?
         for (int j = rang; j <= nbRead; j++)
           boutons[j].order = boutons[j+1].order;
 
@@ -173,8 +179,6 @@ void loop() {
       }
     }
 
-    // au moins 9 boutons sur 10 appuyés
-    // V4 if (nbRead == NB_ELEM - 1) {
     // 10 boutons sur 10 appuyés
     if (nbRead == NB_ELEM) {
       etatAutom = EA_CHECK;
