@@ -168,6 +168,7 @@ void loop() {
         // tableauOrdDonnes[j] = tableauOrdDonnes[j+1]
         for (int j = rang; j <= nbRead; j++)
           boutons[j].order = boutons[j+1].order;
+
         nbRead--;
       }
     }
@@ -175,7 +176,7 @@ void loop() {
     // au moins 9 boutons sur 10 appuyés
     // V4 if (nbRead == NB_ELEM - 1) {
     // 10 boutons sur 10 appuyés
-    if (nbRead == NB_ELEM - 0) {
+    if (nbRead == NB_ELEM) {
       etatAutom = EA_CHECK;
     }
     break;
