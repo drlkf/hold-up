@@ -11,15 +11,27 @@ void tearDown(void) {
 }
 
 void test_verif_code(void) {
-  int tableauCourant[NB_ELEM];
+  int tmp;
+  button boutons[NB_ELEM] = {
+    {true, 0},
+    {true, 1},
+    {true, 2},
+    {true, 3},
+    {true, 4},
+    {true, 5},
+    {true, 6},
+    {true, 7},
+    {true, 8},
+    {true, 9},
+  };
 
-  memcpy(tableauCourant, tableauOrdRequis, NB_ELEM * sizeof(int));
+  TEST_ASSERT_TRUE(verif_code(boutons));
 
-  TEST_ASSERT_TRUE(verif_code(tableauCourant, tableauOrdRequis));
+  tmp = boutons[0].order;
+  boutons[0].order = boutons[1].order;
+  boutons[1].order = tmp;
 
-  tableauCourant[0] = tableauOrdRequis[0] + 1;
-
-  TEST_ASSERT_FALSE(verif_code(tableauCourant, tableauOrdRequis));
+  TEST_ASSERT_FALSE(verif_code(boutons));
 }
 
 void test_failure(void) {

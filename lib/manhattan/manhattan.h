@@ -37,14 +37,37 @@ enum EtatTiroir {
   TIR_REFERME
 };
 
-// le bouton de rang ii gère la led de même rang
-// les boutons
-const int tableauPinBtn[NB_ELEM] = {30, 32, 34, 36, 38, 40, 42, 44, 46, 48};
-// les LED
-const int tableauPinLed[NB_ELEM] = {31, 33, 35, 37, 39, 41, 43, 45, 47, 49};
+// le bouton de rang i gère la led de même rang
+struct button_data {
+  // les boutons
+  int pin_button;
+  // les LED
+  int pin_led;
+  // l'ordre dans lequel le bouton doit etre appuye
+  int ord_requis;
+};
 
-const int tableauOrdRequis[NB_ELEM] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+// structure logique d'un bouton
+struct button {
+  // est-ce que le bouton est enfonce
+  bool is_pressed;
+  // ordre dans lequel le bouton a ete appuye
+  int order;
+};
 
-bool verif_code(const int gauche[NB_ELEM], const int droite[NB_ELEM]);
+const button_data ref_boutons[NB_ELEM] = {
+  {30, 31, 0},
+  {32, 33, 1},
+  {34, 35, 2},
+  {36, 37, 3},
+  {38, 39, 4},
+  {40, 41, 5},
+  {42, 43, 6},
+  {44, 45, 7},
+  {46, 47, 8},
+  {48, 49, 9},
+};
+
+bool verif_code(const button boutons[NB_ELEM]);
 
 #endif
