@@ -1,6 +1,8 @@
 #ifndef MANHATTAN_H
 #define MANHATTAN_H
 
+#define BUF_SIZE 255
+
 // contact d'extraction de la batterie
 #define POS_BATTERIE 7
 
@@ -53,6 +55,13 @@ struct button {
   bool is_pressed;
   // ordre dans lequel le bouton a ete appuye
   int order;
+
+button(const bool is_pressed = false, const int order = -1) :
+  is_pressed(is_pressed), order(order) {}
+
+  void reset();
+  void to_string(char buf[BUF_SIZE]);
+  bool operator==(const button& that) const;
 };
 
 const button_data ref_boutons[NB_ELEM] = {
@@ -68,6 +77,12 @@ const button_data ref_boutons[NB_ELEM] = {
   {48, 49, 9},
 };
 
+// renvoie true si le code est bon, false sinon
 bool verif_code(const button boutons[NB_ELEM]);
+
+/* copie l'etat des boutons dans un nouveau tableau, pour pouvoir comparer les
+   etat avant et apres lecture
+*/
+void rotation_boutons(button previous[NB_ELEM], const button current[NB_ELEM]);
 
 #endif

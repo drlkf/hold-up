@@ -1,9 +1,9 @@
 #define VERSION "Programme de gestion des LED et d'ouverture tiroir sous Manhattan Version 6.0"
 
 #ifdef UNIT_TEST
-  #include "ArduinoFake.h"
+  #include <ArduinoFake.h>
 #else
-  #include "Arduino.h"
+  #include <Arduino.h>
 #endif
 
 #include "manhattan.h"
@@ -77,6 +77,20 @@ void fermeture_tiroir() {
 
   Serial.println("retour de fermeture_tiroir");
 }
+
+void lire_boutons(button boutons[NB_ELEM]) {
+  for (int i = 0; i < NB_ELEM; i++) {
+    boutons[i].is_pressed = !digitalRead(ref_boutons[i].pin_button);
+  }
+}
+
+void rotation_puis_lire_boutons(
+                                // tableau ou stocker les etats precedents
+                                button previous[NB_ELEM],
+                                // etat courant des bouton au moment de l'appel
+                                button current[NB_ELEM]) {
+  rotation_boutons(previous, current);
+  lire_boutons(current);
 }
 
 // eteindre toutes les leds
@@ -109,6 +123,7 @@ void loop() {
   // nombre de boutons encore enfoncés
   int nbButtonOn;
   // etat des boutons poussoir
+  button previous[NB_ELEM];
   button boutons[NB_ELEM];
 
   delay(500);
@@ -126,17 +141,18 @@ void loop() {
     for (int i = 0; i < NB_ELEM; i++) {
       Serial.print("EA_INIT     i = ");
       Serial.println(i);
-      boutons[i].order = -1;
-      boutons[i].is_pressed = false;
+      boutons[i].reset();
       digitalWrite(ref_boutons[i].pin_led, HIGH);
     }
     // RAZ du nombre de boutons appuyés
     nbRead = 0;
     etatAutom = EA_READBTN;
+
+    rotation_puis_lire_boutons(previous, boutons);
+
     // on verifie que tous les boutons sont OFF
     for (int i = 0; i < NB_ELEM; i++) {
-      buttonIsOn = !digitalRead(ref_boutons[i].pin_button);
-      if (buttonIsOn && !boutons[i].is_pressed) {
+      if (boutons[i].is_pressed && !previous[i].is_pressed) {
         // force l'utilisateur à remonter tous les boutons
         etatAutom = EA_FAILURE;
       }
