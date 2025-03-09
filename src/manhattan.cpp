@@ -12,7 +12,7 @@ int nbRead;
 int etatAutom, etatAutomPrec;
 
 // position initiale du tiroir
-EtatTiroir etatTiroir = TIR_FERME;
+etat_tiroir etat_tiroir = TIR_FERME;
 
 /*
   Actions Arduino
@@ -43,10 +43,10 @@ void setup() {
   etatAutom = EA_INIT;
 }
 
-void ouvertureTiroir() {
+void ouverture_tiroir() {
   long debut = millis();
 
-  Serial.println("appel de ouvertureTiroir");
+  Serial.println("appel de ouverture_tiroir");
 
   digitalWrite(IMP_OUVERTURE, LOW);
   delay(1000);
@@ -63,36 +63,37 @@ void ouvertureTiroir() {
   // arrêt moteur
   digitalWrite(IMP_FERMETURE, LOW);
   // le tiroir est ouvert
-  etatTiroir = TIR_OUVERT;
+  etat_tiroir = TIR_OUVERT;
 
-  Serial.println("retour de ouvertureTiroir");
+  Serial.println("retour de ouverture_tiroir");
 }
 
-void fermetureTiroir() {
-  Serial.println("appel de fermetureTiroir");
+void fermeture_tiroir() {
+  Serial.println("appel de fermeture_tiroir");
 
   delay(30000);
   digitalWrite(IMP_FERMETURE, HIGH);
-  etatTiroir = TIR_REFERME;
+  etat_tiroir = TIR_REFERME;
 
-  Serial.println("retour de fermetureTiroir");
+  Serial.println("retour de fermeture_tiroir");
+}
 }
 
 // eteindre toutes les leds
-void extinctionLeds() {
+void extinction_leds() {
   for (int i = 0; i < NB_ELEM; i++) {
     digitalWrite(ref_boutons[i].pin_led, HIGH);
     delay(5);
   }
 }
 
-void farandoleLed() {
+void farandole_led() {
   for (int i = 0; i < NB_ELEM; i++) {
     digitalWrite(ref_boutons[i].pin_led, LOW);
     delay(50);
     digitalWrite(ref_boutons[i].pin_led, HIGH);
     delay(50);
-    Serial.print(etatTiroir);
+    Serial.print(etat_tiroir);
     Serial.print(" attente ");
     Serial.println(digitalRead(POS_BATTERIE));
   }
@@ -112,7 +113,7 @@ void loop() {
 
   delay(500);
   // l'énigme est résolue...
-  if (etatTiroir == TIR_REFERME) {
+  if (etat_tiroir == TIR_REFERME) {
     Serial.println("Stop");
     // on boucle indéfiniment
     while (true)
@@ -190,16 +191,16 @@ void loop() {
 
     // le code est bon
   case EA_SUCCESS:
-    ouvertureTiroir();
+    ouverture_tiroir();
     // jouer la farandole de led jusqu'au retrait de la batterie
-    while (etatTiroir != TIR_REFERME) {
+    while (etat_tiroir != TIR_REFERME) {
       Serial.print(" for ");
       Serial.println(digitalRead(POS_BATTERIE));
-      farandoleLed();
+      farandole_led();
 
       // la batterie est-elle retirée ?
-      if (digitalRead(POS_BATTERIE) != HIGH && etatTiroir != TIR_REFERME)
-        fermetureTiroir();
+      if (digitalRead(POS_BATTERIE) != HIGH && etat_tiroir != TIR_REFERME)
+        fermeture_tiroir();
     }
     break;
 
@@ -210,7 +211,7 @@ void loop() {
     while (nbButtonOn > 0) {
       nbButtonOn = 0;
 
-      extinctionLeds();
+      extinction_leds();
       // allumage des LED correspondant aux boutons enfoncés
       for (int i = 0; i < NB_ELEM; i++) {
         if (boutons[i].is_pressed) {
@@ -241,7 +242,7 @@ void loop() {
     // nombre de boutons encore enfoncés
     int nbButtonOn_bis = 0;
 
-    extinctionLeds();
+    extinction_leds();
 
     // pour chaque bouton[i] (ref_boutons[0 à 9])
     for (int i = 0; i < NB_ELEM; i++) {

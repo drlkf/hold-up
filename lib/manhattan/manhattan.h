@@ -10,7 +10,7 @@
 // temps en secondes de fonctionnement du moteur pour ouverture du tiroir
 #define DEPL_TIROIR 10.5
 
-enum Etat {
+enum etat {
   // état initial, raz TableauOrdDonnes, nbRead
   EA_INIT = 5,
   // en attente de lecture des boutons ; tant que nbRead < NB_ELEM - 1
@@ -24,14 +24,14 @@ enum Etat {
   EA_FAILURE2 = 30
 };
 
-enum ImpulsionMoteur {
+enum impulsion_moteur {
   // relais du moteur sens ouverture
   IMP_OUVERTURE = 6,
   // relais du moteur sens fermeture
   IMP_FERMETURE = 5
 };
 
-enum EtatTiroir {
+enum etat_tiroir {
   TIR_FERME,
   TIR_OUVERT,
   TIR_REFERME
