@@ -8,8 +8,6 @@
 
 #include "manhattan.h"
 
-button boutons[NB_ELEM];
-
 int nbRead;
 int etatAutom, etatAutomPrec;
 
@@ -109,6 +107,8 @@ void loop() {
   bool buttonIsOn;
   // nombre de boutons encore enfoncés
   int nbButtonOn;
+  // etat des boutons poussoir
+  button boutons[NB_ELEM];
 
   delay(500);
   // l'énigme est résolue...
