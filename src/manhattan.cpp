@@ -10,7 +10,6 @@
 
 button boutons[NB_ELEM];
 
-int tableauOrdDonnes[NB_ELEM];
 int nbRead;
 int etatAutom, etatAutomPrec;
 
@@ -121,7 +120,6 @@ void loop() {
   }
 
   switch (etatAutom) {
-    // état initial, raz tableauOrdDonnes, nbRead
   case EA_INIT:
     // initialisation des tables, extinction des LED
     for (int i = 0; i < NB_ELEM; i++) {
